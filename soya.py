@@ -1,13 +1,21 @@
 #!/usr/bin/python3
 import argparse
+import datetime
 import os
 import queue
 import threading
 import rxv
+import time
 import soco
 import sys
 
 from soco.events import event_listener
+
+
+def format_time():
+    now = time.time()
+    str = datetime.datetime.fromtimestamp(now).strftime('%H:%M:')
+    return str
 
 
 class Bridge:
@@ -36,7 +44,8 @@ class Bridge:
                 self._hot = False
 
     def switch_amp(self):
-        print('Switching amp to %s [@ %d]' % (self._input, self._volume))
+        now = format_time()
+        print('%s Switching amp to %s [@ %d]' % (now, self._input, self._volume))
         self.amp.input = self._input
         if self.amp.on is False:
             self.amp.on = True
@@ -84,7 +93,11 @@ def handle_event(event, bridge):
         return
 
     in_group = target in player.group.members
-    print('{:15}: {:15} {} {}'.format(player.player_name, state, in_group, player.is_coordinator))
+    print('{} {:15}: {:15} {} {}'.format(format_time(),
+                                         player.player_name,
+                                         state,
+                                         in_group,
+                                         player.is_coordinator))
 
     if player.is_coordinator is False or in_group is False:
         return
