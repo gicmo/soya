@@ -41,7 +41,7 @@ class Bridge:
                 self.switch_amp()
             except Exception as e:
                 print('[E] error switching amp', e)
-                self._hot = False
+            self._hot = False
 
     def switch_amp(self):
         now = format_time()
